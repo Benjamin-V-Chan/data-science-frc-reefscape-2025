@@ -1,0 +1,41 @@
+{
+    "running_data_generation": true,
+    "scouter_names": ["scouter1", "scouter2", "scouter3", "scouter4", "scouter5", "scouter6", "scouter7", "scouter8", "scouter9", "scouter10"],
+    "data_quantity": {
+        "teams_per_match": 6,
+        "number_of_teams": 45,
+        "number_of_matches_per_team": 10
+    },
+    "variables": {
+        "quantitative": {
+            "data_deviation": [{
+                "mean": 50,
+                "standard_deviation": 10
+            }],
+            "missing_values_chance": 0.025,
+            "missing_values_filler": 0,
+            "positive_outliers_chance": 0.1,
+            "positive_outliers_amount_of_std_devs": 2
+        },
+        "categorical": {
+            "fair_distribution": false,
+            "unfair_distribution": [{
+                "value1": 0.25,
+                "value2": 0.25,
+                "value3": 0.25,
+                "value4": 0.25
+            }],
+            "missing_values_chance": 0.025,
+            "missing_values_filler": "none"
+        },
+        "binary": {
+            "fair_distribution": false,
+            "unfair_distribution": [{
+                "true": 0.6,
+                "false": 0.4
+            }],
+            "missing_values_chance": 0.025,
+            "missing_values_filler": false
+        }
+    }
+}
