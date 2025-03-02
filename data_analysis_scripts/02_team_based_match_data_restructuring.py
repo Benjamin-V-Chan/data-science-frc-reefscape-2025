@@ -42,6 +42,7 @@ def restructure_to_team_based(cleaned_file_path, team_file_path):
 
         for match in cleaned_data:
             total_matches += 1
+            print(match['metadata'])
             team = match["metadata"]["robotTeam"]
 
             if team not in team_data:

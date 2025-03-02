@@ -22,34 +22,116 @@
         }
     },
     "variables": {
-        "var1": {
-            "statistical_data_type": "quantitative"
+        "startingZone": {
+            "start1": {
+                "statistical_data_type": "binary"
+            },
+            "start2": {
+                "statistical_data_type": "binary"
+            },
+            "start3": {
+                "statistical_data_type": "binary"
+            }
         },
-        "var2": {
-            "statistical_data_type": "quantitative"
+        "pickupLocation": {
+            "source1": {
+                "statistical_data_type": "binary"
+            },
+            "source2": {
+                "statistical_data_type": "binary"
+            },
+            "ground1": {
+                "statistical_data_type": "binary"
+            },
+            "ground2": {
+                "statistical_data_type": "binary"
+            },
+            "ground3": {
+                "statistical_data_type": "binary"
+            }
         },
-        "var3": {
+        "placement": {
+            "deposit1": {
+                "statistical_data_type": "binary"
+            },
+            "deposit2": {
+                "statistical_data_type": "binary"
+            },
+            "deposit3": {
+                "statistical_data_type": "binary"
+            },
+            "deposit4": {
+                "statistical_data_type": "binary"
+            },
+            "deposit5": {
+                "statistical_data_type": "binary"
+            },
+            "deposit6": {
+                "statistical_data_type": "binary"
+            }
+        },
+        "autoCoral": {
+            "L1": {
+                "statistical_data_type": "quantitative"
+            },
+            "L2": {
+                "statistical_data_type": "quantitative"
+            },
+            "L3": {
+                "statistical_data_type": "quantitative"
+            },
+            "L4": {
+                "statistical_data_type": "quantitative"
+            }
+        },
+        "autoAlgae": {
+            "netRobot": {
+                "statistical_data_type": "quantitative"
+            },
+            "processor": {
+                "statistical_data_type": "quantitative"
+            },
+            "remove": {
+                "statistical_data_type": "quantitative"
+            }
+        },
+        "teleCoral": {
+            "L1": {
+                "statistical_data_type": "quantitative"
+            },
+            "L2": {
+                "statistical_data_type": "quantitative"
+            },
+            "L3": {
+                "statistical_data_type": "quantitative"
+            },
+            "L4": {
+                "statistical_data_type": "quantitative"
+            }
+        },
+        "teleAlgae": {
+            "netRobot": {
+                "statistical_data_type": "quantitative"
+            },
+            "processor": {
+                "statistical_data_type": "quantitative"
+            },
+            "remove": {
+                "statistical_data_type": "quantitative"
+            }
+        },
+        "leftStartingZone": {
             "statistical_data_type": "binary"
         },
-        "var4": {
-            "var1": {
-                "statistical_data_type": "categorical",
-                "values": [
-                    "value1",
-                    "value2",
-                    "value3",
-                    "value4"
-                ]
-            },
-            "var2": {
-                "statistical_data_type": "categorical",
-                "values": [
-                    "value1",
-                    "value2",
-                    "value3",
-                    "value4"
-                ]
-            }
+        "climb": {
+            "statistical_data_type": "categorical",
+            "values": [
+                "park",
+                "none",
+                "deep",
+                "shallow",
+                "failed"
+            ]
         }
     }
 }

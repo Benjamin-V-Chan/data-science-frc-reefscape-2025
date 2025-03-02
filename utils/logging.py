@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 def log_message(level, message):
     """Standardized logging format with timestamp."""

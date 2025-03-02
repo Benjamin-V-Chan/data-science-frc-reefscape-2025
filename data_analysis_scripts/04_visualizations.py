@@ -15,17 +15,15 @@ VISUALIZATIONS_DIR = "outputs/visualizations"
 
 # Bar Chart Configuration
 BAR_CHART_CONFIG = {
-    "distribution a": {"variable_metrics": ["var1_mean"], "visualizations": ["bar_chart"]},
-    "distribution b": {
-        "variable_metrics": ["var2_mean", "var2_max", "var3_percent_True"],
+    "Team Coral Comparisons": {
+        "variable_metrics": ["auto_coral_mean", "auto_coral_max", "tele_coral_mean", "tele_coral_max"],
         "visualizations": ["stacked_bar_chart", "grouped_bar_chart", "parallel_coordinates_plot"]
     }
 }
 
 # Boxplot Configuration
 BOXPLOT_CONFIG = {
-    "Boxplot for Variable 1": ["var1"],
-    "Boxplot for Variable 2 and 3": ["var2"]
+    "Boxplot Tele L4 Coral": ["teleCoral.L4"]
 }
 
 # ===========================
