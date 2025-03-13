@@ -5,10 +5,10 @@ from collections import defaultdict
 import tbapy
 
 # --- Configuration ---
-SUMMARY_FILE = "match_alliance_summary.json"   # Aggregated metrics from scouting data
+SUMMARY_FILE = "outputs\scouter_leaderboard\blue_alliance_data.json"   # Aggregated metrics from scouting data
 SCOUTING_FILE = "data\processed\cleaned_match_data.json"  # Raw scouting entries (adjust path as needed)
-PENALTIES_FILE = "scouter_penalties.json"        # Output file for raw penalty counts
-RELATIVE_FILE = "scouter_penalties_relative.json" # Output file for relative percentages & confidence intervals
+PENALTIES_FILE = "outputs\scouter_leaderboard\scouter_penalties.json"        # Output file for raw penalty counts
+RELATIVE_FILE = "outputs\scouter_leaderboard\scouter_penalties_relative.json" # Output file for relative percentages & confidence intervals
 
 # TBA configuration (set your TBA_KEY environment variable)
 TBA_KEY = os.getenv("TBA_KEY")
