@@ -4,13 +4,11 @@ import math
 from collections import defaultdict
 import tbapy
 
-
-
 # CONFIGURATION
-SUMMARY_FILE = "outputs\scouter_leaderboard\blue_alliance_data.json" # Aggregated metrics from scouting data
-SCOUTING_FILE = "data\processed\cleaned_match_data.json" # Raw scouting entries
-PENALTIES_FILE = "outputs\scouter_leaderboard\scouter_penalties.json" # Output file for raw penalty counts
-RELATIVE_FILE = "outputs\scouter_leaderboard\scouter_penalties_relative.json" # Output file for relative percentages & confidence intervals
+SUMMARY_FILE = "outputs\\scouter_leaderboard\\summary_alliance_data.json"  # Aggregated metrics from scouting data
+SCOUTING_FILE = "data\\processed\\cleaned_match_data.json"  # Raw scouting entries
+PENALTIES_FILE = "outputs\\scouter_leaderboard\\scouter_penalties.json"  # Output file for raw penalty counts
+RELATIVE_FILE = "outputs\\scouter_leaderboard\\scouter_penalties_relative.json"  # Output file for relative percentages & confidence intervals
 
 # TBA config
 TBA_KEY = os.getenv("TBA_KEY")
@@ -22,8 +20,6 @@ tba = tbapy.TBA(TBA_KEY)
 event_key = "2025caph"
 year = 2025
 
-
-
 # LOAD DATA
 
 # Load aggregated alliance metrics from scouting data
@@ -34,11 +30,9 @@ with open(SUMMARY_FILE, "r") as f:
 with open(SCOUTING_FILE, "r") as f:
     scouting_data = json.load(f)
 
-
-
 # MAIN SCRIPT
 
-#TODO: Make logging better and more detailed (include specific error info and maybe have it save to a .txt within folder dedicated to script logs (for recording keeping (and should have timestamps and run speed and stuff too)))
+# TODO: Make logging better and more detailed (include specific error info and maybe have it save to a .txt within folder dedicated to script logs with timestamps and run speed)
 
 # Group scouting entries by match number and alliance
 # Essentially mapping each match number to a dictionary with keys "red" and "blue"
@@ -93,7 +87,7 @@ for match_num_key, our_alliance in alliance_summary.items():
     tba_red_tele  = tba_red.get("teleopCoralCount")
 
     # For each alliance, compare our values with TBA values.
-    # For every mismatch (if the TBA value is provided), add one penalty point for each scouter in that alliance (respective to opportunistic attribute counts. aka if more opportunities to fail, will keep in mind in calculation)
+    # For every mismatch (if the TBA value is provided), add one penalty point for each scouter in that alliance.
     if tba_blue_auto is not None and our_blue_auto != tba_blue_auto:
         for scouter in match_alliance_scouters.get(match_num, {}).get("blue", []):
             penalties[scouter] += 1
@@ -132,11 +126,11 @@ for scouter, count in total_entries.items():
     penalty_count = penalties.get(scouter, 0)
     max_possible = count * 2  # 2 opportunities per entry
     
-    # Proportion of errors and Standard error using binomial proportion calculations (adv stats!)
+    # Proportion of errors and Standard error using binomial proportion calculations
     p = penalty_count / max_possible if max_possible > 0 else 0
     se = math.sqrt(p * (1 - p) / max_possible) if max_possible > 0 else 0
     
-    # 95% confidence interval (alpha = 0.05) using normal approximation (Z = 1.96)
+    # 95% confidence interval using normal approximation (Z = 1.96)
     ci_lower = max(0, p - 1.96 * se)
     ci_upper = min(1, p + 1.96 * se)
     relative_penalties[scouter] = {
