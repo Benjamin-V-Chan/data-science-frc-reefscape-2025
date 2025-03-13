@@ -1,13 +1,15 @@
+#!/usr/bin/env python3
 import os
 import json
+import math
 from collections import defaultdict
 import tbapy
 
 # --- Configuration ---
 SUMMARY_FILE = "match_alliance_summary.json"   # Aggregated metrics from scouting data
-SCOUTING_FILE = "data\processed\cleaned_match_data.json"        # Raw scouting entries
+SCOUTING_FILE = r"data\processed\cleaned_match_data.json"  # Raw scouting entries (adjust path as needed)
 PENALTIES_FILE = "scouter_penalties.json"        # Output file for raw penalty counts
-RELATIVE_FILE = "scouter_penalties_relative.json" # Output file for relative percentages
+RELATIVE_FILE = "scouter_penalties_relative.json" # Output file for relative percentages and confidence intervals
 
 # TBA configuration (set your TBA_KEY environment variable)
 TBA_KEY = os.getenv("TBA_KEY")
@@ -16,8 +18,8 @@ if not TBA_KEY:
     exit(1)
 
 tba = tbapy.TBA(TBA_KEY)
-event_key = "2025caph"  # adjust as needed
-year = 2025             # adjust as needed
+event_key = "2025caph"  # Adjust as needed
+year = 2025             # Adjust as needed
 
 # --- Load aggregated alliance metrics from scouting data ---
 with open(SUMMARY_FILE, "r") as f:
@@ -28,7 +30,7 @@ with open(SCOUTING_FILE, "r") as f:
     scouting_data = json.load(f)
 
 # --- Group scouting entries by match number and alliance ---
-# We'll map each match number to a dictionary with keys "red" and "blue"
+# Map each match number to a dictionary with keys "red" and "blue"
 # whose values are the sets of scouter names that submitted entries for that alliance.
 match_alliance_scouters = defaultdict(lambda: {"red": set(), "blue": set()})
 for entry in scouting_data:
@@ -111,22 +113,29 @@ for entry in scouting_data:
     scouter = entry.get("metadata", {}).get("scouterName", "Unknown")
     total_entries[scouter] += 1
 
-# --- Compute relative penalty percentages ---
-# Since each entry has 8 attributes (4 teleCoral + 4 autoCoral) that could be in error,
-# we set the maximum possible penalty for that entry as 8.
+# --- Compute relative penalty percentages and 95% confidence intervals ---
+# Each scouting entry has 8 opportunities for error (4 teleCoral + 4 autoCoral)
 relative_penalties = {}
 for scouter, count in total_entries.items():
     penalty_count = penalties.get(scouter, 0)
     max_possible = count * 8  # total opportunities for error
-    percent = (penalty_count / max_possible) * 100 if max_possible > 0 else 0
+    # Proportion of errors
+    p = penalty_count / max_possible if max_possible > 0 else 0
+    # Standard error using the binomial distribution's normal approximation:
+    se = math.sqrt(p * (1 - p) / max_possible) if max_possible > 0 else 0
+    # 95% confidence interval (using Z = 1.96)
+    ci_lower = max(0, p - 1.96 * se)
+    ci_upper = min(1, p + 1.96 * se)
     relative_penalties[scouter] = {
         "total_entries": count,
         "max_possible": max_possible,
         "penalties": penalty_count,
-        "penalty_percent": percent
+        "penalty_percent": p * 100,
+        "ci_lower_percent": ci_lower * 100,
+        "ci_upper_percent": ci_upper * 100
     }
 
-# --- Save relative penalty data to a JSON file ---
+# --- Save relative penalty data with confidence intervals to a JSON file ---
 with open(RELATIVE_FILE, "w") as f:
     json.dump(relative_penalties, f, indent=4)
-print(f"Scouter relative penalties saved to {RELATIVE_FILE}")
+print(f"Scouter relative penalties with confidence intervals saved to {RELATIVE_FILE}")
