@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import os
 import json
 from collections import defaultdict
@@ -7,7 +8,8 @@ import tbapy
 # File names (adjust if necessary)
 SUMMARY_FILE = "match_alliance_summary.json"   # Aggregated metrics per match from scouting data
 SCOUTING_FILE = "data\processed\cleaned_match_data.json"        # Raw scouting data entries
-PENALTIES_FILE = "scouter_penalties.json"        # Output file for scouter penalty points
+PENALTIES_FILE = "scouter_penalties.json"        # Output file for scouter penalty counts
+RELATIVE_FILE = "scouter_penalties_relative.json" # Output file for relative penalty percentages
 
 # TBA configuration (set your TBA key in your environment)
 TBA_KEY = os.getenv("TBA_KEY")
@@ -16,8 +18,8 @@ if not TBA_KEY:
     exit(1)
 
 tba = tbapy.TBA(TBA_KEY)
-event_key = "2025caph"  # Change as needed
-year = 2025             # Change as needed
+event_key = "2025caph"  # Adjust as needed
+year = 2025             # Adjust as needed
 
 # --- Load the aggregated alliance metrics from scouting data ---
 with open(SUMMARY_FILE, "r") as f:
@@ -73,14 +75,15 @@ for match_num_key, our_alliance in alliance_summary.items():
     our_red_auto  = our_alliance.get("red", {}).get("autoCoralCount", 0)
     our_red_tele  = our_alliance.get("red", {}).get("teleCoralCount", 0)
 
-    # From TBA, note that the teleCoral metric is named "teleopCoralCount"
+    # TBA data: assume autoCoralCount is directly provided,
+    # and teleCoral data is under "teleopCoralCount".
     tba_blue_auto = tba_blue.get("autoCoralCount")
     tba_blue_tele = tba_blue.get("teleopCoralCount")
     tba_red_auto  = tba_red.get("autoCoralCount")
     tba_red_tele  = tba_red.get("teleopCoralCount")
 
     # For each alliance, compare our values to TBA's.
-    # If a mismatch is found and the TBA value is available, add a penalty point for each scouter in that alliance for that match.
+    # For every mismatch (if the TBA value exists), add one penalty point for each scouter in that alliance.
     if tba_blue_auto is not None and our_blue_auto != tba_blue_auto:
         for scouter in match_alliance_scouters.get(match_num, {}).get("blue", []):
             penalties[scouter] += 1
@@ -101,8 +104,32 @@ for match_num_key, our_alliance in alliance_summary.items():
             penalties[scouter] += 1
         print(f"Mismatch in match {match_num} RED teleCoralCount: scouting = {our_red_tele}, TBA = {tba_red_tele}")
 
-# --- Save the penalty leaderboard to a JSON file ---
+# --- Save the raw penalty leaderboard to a JSON file ---
 with open(PENALTIES_FILE, "w") as f:
     json.dump(penalties, f, indent=4)
 
 print(f"Scouter penalties saved to {PENALTIES_FILE}")
+
+# --- Compute total number of scouting entries per scouter ---
+total_entries = defaultdict(int)
+for entry in scouting_data:
+    scouter = entry.get("metadata", {}).get("scouterName", "Unknown")
+    total_entries[scouter] += 1
+
+# --- Create relative percentages for each scouter ---
+# For each scouter, penalty percent = (penalty count / total entries) * 100.
+relative_penalties = {}
+for scouter, count in total_entries.items():
+    penalty_count = penalties.get(scouter, 0)
+    percent = (penalty_count / count) * 100 if count > 0 else 0
+    relative_penalties[scouter] = {
+        "total_entries": count,
+        "penalties": penalty_count,
+        "penalty_percent": percent
+    }
+
+# --- Save the relative penalty leaderboard to a JSON file ---
+with open(RELATIVE_FILE, "w") as f:
+    json.dump(relative_penalties, f, indent=4)
+
+print(f"Scouter relative penalties saved to {RELATIVE_FILE}")
