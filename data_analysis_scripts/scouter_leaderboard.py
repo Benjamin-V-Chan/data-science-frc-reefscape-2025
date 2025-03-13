@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import os
 import json
 import math
@@ -6,11 +5,14 @@ import time
 from collections import defaultdict
 import tbapy
 
+
+
 # CONFIGURATION
-SCOUTING_FILE = r"data\processed\cleaned_match_data.json"  # Raw scouting entries
-SUMMARY_FILE = r"outputs\scouter_leaderboard\summary_alliance_data.json"  # Aggregated metrics from scouting data
-PENALTIES_FILE = r"outputs\scouter_leaderboard\scouter_penalties.json"  # Output file for raw penalty counts
-RELATIVE_FILE = r"outputs\scouter_leaderboard\scouter_penalties_relative.json"  # Output file for relative percentages & confidence intervals
+
+SCOUTING_FILE = "data\processed\cleaned_match_data.json"  # Raw scouting entries
+SUMMARY_FILE = "outputs\scouter_leaderboard\summary_alliance_data.json"  # Aggregated metrics from scouting data
+PENALTIES_FILE = "outputs\scouter_leaderboard\scouter_penalties.json"  # Output file for raw penalty counts
+RELATIVE_FILE = "outputs\scouter_leaderboard\scouter_penalties_relative.json"  # Output file for relative percentages & confidence intervals
 
 # TBA configuration
 TBA_KEY = os.getenv("TBA_KEY")
@@ -19,12 +21,15 @@ if not TBA_KEY:
     exit(1)
 
 tba = tbapy.TBA(TBA_KEY)
-event_key = "2025caph"  # adjust as needed
-year = 2025             # adjust as needed
+event_key = "2025caph"
+year = 2025
 
 start_time = time.time()
 
-# PART 1: Generate Alliance Summary from Scouting Data
+
+
+# ALLIANCE SUMMARY GENERATION
+
 print("Generating alliance summary from scouting data...")
 with open(SCOUTING_FILE, "r") as f:
     scouting_data = json.load(f)
@@ -73,7 +78,9 @@ with open(SUMMARY_FILE, "w") as f:
     json.dump(alliance_summary, f, indent=4)
 print(f"Alliance summary saved to {SUMMARY_FILE}")
 
-# PART 2: Cross-Reference with TBA Data and Compute Penalties
+
+
+# CROSS-REFERNCING WITH TBA DATA AND PENALTY COMPUTATIONS
 
 # Group scouting entries by match number and alliance (to know which scouters contributed)
 match_alliance_scouters = defaultdict(lambda: {"red": set(), "blue": set()})
@@ -145,7 +152,9 @@ with open(PENALTIES_FILE, "w") as f:
     json.dump(penalties, f, indent=4)
 print(f"Scouter penalties saved to {PENALTIES_FILE}")
 
-# PART 3: Compute Relative Penalties and 95% Confidence Intervals
+
+
+# RELATIVE PENALTY AND 95% CONFIDENCE INTERVAL CALCULATIONS
 
 # Count total number of scouting entries per scouter
 total_entries = defaultdict(int)
