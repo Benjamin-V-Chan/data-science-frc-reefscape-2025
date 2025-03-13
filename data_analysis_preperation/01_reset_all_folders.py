@@ -74,7 +74,8 @@ if __name__ == "__main__":
         "outputs": {
             "statistics": {},
             "team_data": {},
-            "visualizations": {}
+            "visualizations": {},
+            "scouter_leaderboard": {}
         },
         "config": {
             "data_generation_config_default_values_config.json": None,
