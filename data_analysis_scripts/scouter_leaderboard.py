@@ -24,6 +24,8 @@ tba = tbapy.TBA(TBA_KEY)
 event_key = "2025caph"
 year = 2025
 
+attributes_testing_for_count = 2
+
 start_time = time.time()
 
 
@@ -65,6 +67,8 @@ for entry in scouting_data:
         if isinstance(val, bool):
             val = 1 if val else 0
         auto_count += val
+        
+    
 
     if match_key not in alliance_summary:
         alliance_summary[match_key] = {
@@ -107,7 +111,7 @@ for match_num_key, our_alliance in alliance_summary.items():
 
     print(f"Processing match {match_num}...")
     try:
-        tba_match = tba.match(year=year, event=event_key, number=match_num)
+        tba_match = tba.match(year=year, event=event_key, number=match_num)        
     except Exception as e:
         print(f"Error retrieving TBA match data for match {match_num}: {e}")
         continue
@@ -162,12 +166,10 @@ for entry in scouting_data:
     scouter = entry.get("metadata", {}).get("scouterName", "Unknown")
     total_entries[scouter] += 1
 
-# Since each entry contributes 2 metrics (teleCoralCount and autoCoralCount),
-# maximum possible errors = number_of_entries * 2.
 relative_penalties = {}
 for scouter, count in total_entries.items():
     penalty_count = penalties.get(scouter, 0)
-    max_possible = count * 2
+    max_possible = count * attributes_testing_for_count
     p = penalty_count / max_possible if max_possible > 0 else 0
     se = math.sqrt(p * (1 - p) / max_possible) if max_possible > 0 else 0
     ci_lower = max(0, p - 1.96 * se)
