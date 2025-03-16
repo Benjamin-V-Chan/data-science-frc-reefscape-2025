@@ -2,7 +2,7 @@ import json
 from collections import defaultdict
 
 # File paths
-INPUT_FILE = "data/raw/backup.json"  # Replace with actual path
+INPUT_FILE = "data/raw/lar_data_raw.json"  # Replace with actual path
 OUTPUT_FILE_CLEANED = "data/raw/cleaned_backup.json"
 OUTPUT_FILE_INVALID = "data/raw/invalid_entries.json"
 

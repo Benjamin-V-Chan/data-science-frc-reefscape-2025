@@ -8,7 +8,7 @@ metadata_keys = set(expected_structure["metadata"].keys())
 variable_keys = set(expected_structure["variables"].keys())
 
 # Load the input JSON data
-with open("data/raw/raw_data.json", "r") as f:
+with open("data/raw/matchapps_data.json", "r") as f:
     input_data = json.load(f)
 
 # Process each entry in the input data
